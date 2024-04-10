@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% set active = "Article" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="article-card article-card-shadow">
+        <a href="javascript:history.back()"><strong>&larr;</strong> Back</a>
+        <h1 class="page-title">{{ title }}</h1>
+        <p class="modification-info">
+            {% autoescape false %}
+            <i>{{ contributor_info_message }}</i>
+            {% endautoescape %}
+            <span class="vote-span">
+                <img class="vote-button up" src="/static/img/up.png" alt="Upvote">
+                <strong>{{ votes }}</strong> votes
+                <img class="vote-button down" src="/static/img/down.png" alt="Downvote">
+            </span>
+        </p>
+        <p style="margin-bottom: 0;">(<a href="/edit_article/{{ id }}">Edit</a>)</p>
+        {% autoescape false %}
+        {{ content }}
+        {% endautoescape %}
+    </div>
+</div>
+
+<script>
+    const originalVotes = parseInt('{{ votes }}');
+    const voteElem = $(".vote-span > strong");
+    
+    function resetVoteState() {
+        $(".vote-button").removeClass("selected");
+        voteElem.html(originalVotes);
+    }
+    
+    $(".vote-button.up").click(function() {
+        if ($(this).hasClass("selected")) {
+            resetVoteState();
+            $.post(`/api/downvote/{{ id }}`, data => { if (!data.success) alert("Failed to undo vote."); });
+        } else {
+            voteElem.html(originalVotes + 1);
+            $(this).addClass("selected");
+            $.post(`/api/upvote/{{ id }}`, data => { if (!data.success) alert("Failed to upvote."); });
+        }
+    });
+    
+    $(".vote-button.down").click(function() {
+        if ($(this).hasClass("selected")) {
+            resetVoteState();
+            $.post(`/api/upvote/{{ id }}`, data => { if (!data.success) alert("Failed to undo vote."); });
+        } else {
+            voteElem.html(originalVotes - 1);
+            $(this).addClass("selected");
+            $.post(`/api/downvote/{{ id }}`, data => { if (!data.success) alert("Failed to downvote."); });
+        }
+    });
+</script>
+
+{% endblock %}

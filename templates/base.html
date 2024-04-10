@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Drexelpedia - {% block title %}{% endblock %}</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="/static/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-Uj/2dC2BdiyIShkmKKBbnpPzX9wmNAt5Pfrqjp3qvcst1tA5ty5RIB77yQa1m/PmJcX9zjZAsymAXJCUT0VvLg==" crossorigin="anonymous" />
+
+
+    <script src="/static/lib/jquery/jquery.min.js"></script>
+    <script src="/static/lib/popper/popper.min.js"></script>
+    <script src="/static/lib/bootstrap/bootstrap.min.js"></script>
+    
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% block header %}{% endblock %}
+</head>
+
+<body>
+    <div id="contributor-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contributors</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showContributorModal(articleId) {
+            $.get(`/api/get_contributor_info/${articleId}`, function(data, status) {
+                if (status !== "success") {
+                    alert("Could not fetch contributor info. Status: " + status);
+                    return;
+                }
+                const ul = $("<ul></ul>");
+                for (let contributor of data) {
+                    ul.append(`<li><a href='/profile/${contributor.modifying_username}'>${contributor.modifying_username}</a> on ${new Date(contributor.modification_time).toLocaleString()}</li>`);
+                }
+                $(".modal-body").empty().append(ul);
+            });
+            $("#contributor-modal").modal({show: true});
+        }
+    </script>
+    
+    <header>
+        <!-- <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <nav class="navbar navbar-expand-md navbar-dark">
+                            <a class="navbar-brand" href="/" title="Recent articles">
+                                <img src="/static/img/drexelpedia-logo-new.svg" style="max-height: 50px;">
+                                <span class="logo-text align-middle">Drexelpedia</span>
+                            </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item{% if active == 'Latest' %} active{% endif %}">
+                                    <a class="nav-link" href="/">Latest</a>
+                                </li>-->
+                                <!-- <form class="form-inline my-2 my-lg-0 ml-auto">
+                                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                                </form> -->
+                                <!-- <form class="form-inline my-2 my-lg-0 ml-auto">
+                                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                                </form> -->
+                                <!--<form class="form-inline my-2 my-lg-0 ml-auto">
+                                    <input class="form-control mr-sm-2" type="search" placeholder="Search an article..." aria-label="Search">-->
+                                    <!-- <button class="btn btn-primary my-2 my-sm-0" style="background-color: #ffd249; border-color: #ffd249;" type="submit">Search</button> -->
+                                   <!-- <a class="navbar-brand" href="/"><img src="/static/img/shuffle.png" style="max-height: 25px;"></a>
+                                </form>
+                                  
+                            </ul>
+                            
+                            <ul class="navbar-nav">
+                                {% if session['user'] %}
+                                <li class="nav-item">
+                                    <a class="btn btn-primary my-2 my-sm-0 custom-yellow" href="/create_article">Create Article</a>
+
+                                </li>
+                                <li class="nav-item dropdown{% if active == 'Account' %} active{% endif %}">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ session['user']['username'] }}
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="/profile">My Profile</a>
+                                        <a class="dropdown-item" href="/logout">Log Out</a>
+                                    </div>
+                                </li>
+                                {% else %}
+                                <li class="nav-item">
+                                    <a class="btn btn-primary my-2 my-sm-0 custom-yellow" href="/login">Log In</a>
+                                    <a class="btn btn-primary my-2 my-sm-0 custom-yellow" href="/create_user">Sign Up</a>
+
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div> -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-survival101">
+            <div class="container">
+              <a class="navbar-brand" href="/welcome">
+                <img src="/static/img/drexelpedia-logo-new.svg" style="max-height: 2.3em; padding-top: 4px;">
+              </a>
+              <!-- <a class="navbar-brand" href="/" title="Recent articles">
+                <img src="/static/img/drexelpedia-logo-new.svg" style="max-height: 50px;">
+              </a> -->
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+          
+              <div class="collapse navbar-collapse" id="navbarColor02" >
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <a href="/welcome"><span class="logo-text align-middle">Drexelpedia</span></a>
+                    <!-- <a class="nav-link" href="#">Recent Articles<span class="sr-only">(current)</span></a> -->
+                  </li>
+                  <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Login</a>
+                  </li> -->
+                  <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Trending</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">More <i class="ion-ios-arrow-down"></i></a>
+                  </li> -->
+                </ul>
+
+                
+                <form class="form-inline">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link px-4"  href="/">Recent Articles<span class="sr-only">(current)</span></a>
+                    </li>
+                  </ul>
+                  <div class="input-group search-box">
+                    <input type="text" style="height: 100%;" class="form-control" placeholder="Search an article..." aria-label="Search for..." onsubmit="window.location.href = '/search/lancaster'; return false;"">
+                    <a class="navbar-brand" href="/random"><img src="/static/img/shuffle.png" style="max-height: 25px;"></a>
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary" type="button"><i class="ion-search"></i></button>
+                    </span>
+                  </div>
+                </form>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Login</a>
+                </li> -->
+
+                <!-- <form class="form-inline my-2 my-lg-0 ml-auto">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search an article..." aria-label="Search">
+                    <a class="navbar-brand" href="/"><img src="/static/img/shuffle.png" style="max-height: 25px;"></a>
+                </form> -->
+
+             
+                <ul class="navbar-nav">
+                    {% if session['user'] %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary my-2 my-sm-0 custom-blue" href="/create_article">Create Article</a>
+
+                    </li>
+                    <li class="nav-item dropdown{% if active == 'Account' %} active{% endif %}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Hi {{ session['user']['username'] }}!
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/profile">My Profile</a>
+                            <a class="dropdown-item" href="/logout">Log Out</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary custom-blue" href="/login">Log In</a>
+                        <a class="btn btn-primary custom-blue" href="/create_user">Sign Up</a>
+
+                    </li>
+                    {% endif %}
+                </ul>
+              </div>
+            </div>
+              
+          </nav>
+          <!-- <div class="container" style="background-image: url(/static/img/backg.png); height: 100vh;">
+            <div class="row">
+              <div class="col-lg-6">
+                
+              </div>
+              <div class="col-lg-6">
+                <div class="p-5 mt-4">
+                    <h1 class="display-4">About US</h1>
+                    <p class="lead px-0">Welcome to Drexelpedia!</p>
+                    <a href="/" class="btn btn-outline-dark">Read Articles</a>
+                  </div>
+              </div>
+          </div>
+
+          </div>
+           -->
+    </header>
+
+    <main>
+        <div class="container content">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+  
+
+  <!-- <footer class="bg-dark text-center text-white">
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-google fa-2x"></i></a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-linkedin-in fa-2x"></i></a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-github fa-2x"></i></a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <p class="text-center">@2023 Copyright: Drexelpedia</p>
+        </div>
+      </div>
+    </div>
+  </footer> -->
+  <footer id="my-footer" class="bg-dark text-center text-white py-5 fbg navbar-survival101">
+    <!-- <div class="container p-4">
+      <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-google fa-2x"></i></a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-linkedin-in fa-2x"></i></a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-github fa-2x"></i></a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+        </div>
+      </div> -->
+      <div class="row">
+        <div class="col-lg-12">
+          <p class="text-center">&copy; 2023 Drexelpedia. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  
+</body>
+
+</html>

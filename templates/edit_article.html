@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% set active = "Create Article" %}
+
+{% block title %}
+Create Article
+{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Article</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+</head>
+<body>
+    <a href="javascript:history.back()"><strong>&larr;</strong> Back</a>
+    <h1 class="page-title mb-4">Create Article</h1>
+	<div class="container">
+		<form id="article-form">
+			<div class="mb-3">
+				<label for="title" class="form-label">Title:</label>
+				<input type="text" id="title" name="title" class="form-control" value="{{article_title}}" required>
+				<div class="invalid-feedback">Please enter a title.</div>
+			</div>
+			<div class="mb-3">
+				<label for="content" class="form-label">Content:</label>
+				<textarea id="content" name="content" class="form-control"></textarea>
+				<div class="invalid-feedback">Please enter some content.</div>
+			</div>
+			<button type="button" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+    
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+	var simplemde = new SimpleMDE({
+        autoDownloadFontAwesome: true,
+        element: document.getElementById("content"),
+    });
+    simplemde.value("{{content}}");
+
+	var form = document.getElementById("article-form");
+
+    $(".btn-primary").click(function() {
+        $.post("/writearticle");
+        window.location.href = '/';
+    })
+</script>
+</body>
+</html>
+
+
+
+{% endblock %}
